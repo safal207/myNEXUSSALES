@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { apiClient } from '@/utils/api';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -30,11 +31,8 @@ export default function LoginForm() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await apiClient('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(data),
       });
 

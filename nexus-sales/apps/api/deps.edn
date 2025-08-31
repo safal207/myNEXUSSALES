@@ -1,17 +1,14 @@
-{:paths ["src"]
-
- :deps
- {org.clojure/clojure {:mvn/version "1.11.1"}
-  ring/ring-core {:mvn/version "1.12.0"}
-  ring/ring-jetty-adapter {:mvn/version "1.12.0"}
-  metosin/reitit {:mvn/version "0.7.0-alpha8"}
-  metosin/muuntaja {:mvn/version "0.6.8"}
-  org.xerial/sqlite-jdbc {:mvn/version "3.45.1.0"}
-  org.clojure/java.jdbc {:mvn/version "0.7.12"}
-  buddy/buddy-hashers {:mvn/version "2.0.167"}
-  buddy/buddy-sign {:mvn/version "3.5.351"}}
-
- :aliases
- {:run {:main-opts ["-m" "nexus.api.server"]}
-  :migrate {:main-opts ["-m" "nexus.api.db.migrate"]}}
-}
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure            {:mvn/version "1.11.3"}
+        metosin/reitit-ring            {:mvn/version "0.7.0"}
+        metosin/muuntaja               {:mvn/version "0.6.10"}
+        ring/ring-jetty-adapter        {:mvn/version "1.11.0"}
+        ring-cors/ring-cors            {:mvn/version "0.1.13"}
+        com.github.seancorfield/next.jdbc {:mvn/version "1.3.939"}
+        hikari-cp/hikari-cp            {:mvn/version "3.1.0"}
+        ch.qos.logback/logback-classic {:mvn/version "1.5.6"}
+        buddy/buddy-sign               {:mvn/version "3.5.351"}
+        com.stripe/stripe-java         {:mvn/version "24.0.0"}
+        aero/aero                      {:mvn/version "1.1.6"}}
+ :aliases {:run {:main-opts ["-m" "nexus.api.server"]}
+           :migrate {:main-opts ["-m" "nexus.api.db.migrate"]}}}

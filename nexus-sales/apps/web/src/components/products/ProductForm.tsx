@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@/utils/api';
 
 const productSchema = z.object({
   name: z.string().min(3, { message: 'Name must be at least 3 characters long' }),
@@ -56,9 +57,8 @@ export default function ProductForm({ product }: ProductFormProps) {
     };
 
     try {
-      const response = await fetch(apiEndpoint, {
+      const response = await apiClient(apiEndpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 

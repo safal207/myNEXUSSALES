@@ -1,39 +1,15 @@
 (ns nexus.api.db.migrate
-  (:require [nexus.api.db.core :as db]
-            [clojure.java.jdbc :as jdbc]))
+  (:require [nexus.api.db.core :as db]))
 
-(def create-users-table
-  "CREATE TABLE IF NOT EXISTS users (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     email TEXT UNIQUE NOT NULL,
-     password_hash TEXT NOT NULL,
-     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
-   )")
-
-(def create-products-table
-  "CREATE TABLE IF NOT EXISTS products (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     user_id INTEGER NOT NULL,
-     name TEXT NOT NULL,
-     description TEXT,
-     price INTEGER NOT NULL,
-     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-     FOREIGN KEY(user_id) REFERENCES users(id)
-   )")
-
-(def create-orders-table
-  "CREATE TABLE IF NOT EXISTS orders (
-     id INTEGER PRIMARY KEY AUTOINCREMENT,
-     product_id INTEGER NOT NULL,
-     customer_email TEXT NOT NULL,
-     amount INTEGER NOT NULL,
-     created_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ', 'now')),
-     FOREIGN KEY(product_id) REFERENCES products(id)
-   )")
+(defn up! []
+  (println "Running database migrations...")
+  (doseq [sql
+          ["CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, email TEXT UNIQUE, password_hash TEXT, created_at TEXT);"
+           "CREATE TABLE IF NOT EXISTS products (id TEXT PRIMARY KEY, seller_id TEXT, title TEXT, description TEXT, price REAL, active INTEGER, created_at TEXT, updated_at TEXT);"
+           "CREATE TABLE IF NOT EXISTS orders (id TEXT PRIMARY KEY, product_id TEXT, email TEXT, status TEXT, created_at TEXT);"
+           "CREATE TABLE IF NOT EXISTS events (id TEXT PRIMARY KEY, name TEXT, ts TEXT, session_id TEXT, product_id TEXT, order_id TEXT, referrer TEXT, ab_variant TEXT);"]]
+    (db/exec! sql))
+  (println "Migrations complete."))
 
 (defn -main [& _]
-  (println "Running migrations...")
-  (jdbc/execute! db/db-spec [create-users-table])
-  (jdbc/execute! db/db-spec [create-products-table])
-  (jdbc/execute! db/db-spec [create-orders-table])
-  (println "Migrations complete."))
+  (up!))

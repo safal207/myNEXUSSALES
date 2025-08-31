@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { apiClient } from '@/utils/api';
 
 interface Product {
   id: number;
@@ -29,7 +30,7 @@ export default function ProductsPage() {
     if (isAuthenticated) {
       const fetchProducts = async () => {
         try {
-          const response = await fetch('/api/products');
+          const response = await apiClient('/api/products');
           if (!response.ok) throw new Error('Failed to fetch products');
           const data = await response.json();
           setProducts(data.products);

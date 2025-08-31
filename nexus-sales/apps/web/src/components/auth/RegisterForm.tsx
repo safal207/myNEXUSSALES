@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiClient } from '@/utils/api';
 
 const registerSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
@@ -30,11 +31,8 @@ export default function RegisterForm() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/auth/register', {
+      const response = await apiClient('/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify(data),
       });
 

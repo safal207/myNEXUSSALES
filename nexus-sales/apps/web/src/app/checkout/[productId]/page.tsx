@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { track } from '@/utils/tracking';
+import { apiClient } from '@/utils/api';
 
 const checkoutSchema = z.object({
   email: z.string().email({ message: 'A valid email is required.' }),
@@ -55,9 +56,8 @@ export default function CheckoutPage() {
     setFormError(null);
     track('submit_order_attempt', { productId, abVariant });
     try {
-      const response = await fetch('/api/public/orders', {
+      const response = await apiClient('/api/public/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...data, productId }),
       });
       const result = await response.json();
@@ -75,7 +75,7 @@ export default function CheckoutPage() {
     setError(null);
     track('page_view', { productId, abVariant, path: `/checkout/${productId}` });
 
-    fetch(`/api/public/products/${productId}`)
+    apiClient(`/api/public/products/${productId}`)
       .then(res => {
         if (res.status === 404) throw new Error('This product could not be found. It may have been removed.');
         if (!res.ok) throw new Error('A network error occurred while fetching product details.');

@@ -1,13 +1,13 @@
 (ns nexus.api.db.core
-  (:require [clojure.java.jdbc :as jdbc]))
+  (:require [next.jdbc :as jdbc]
+            [hikari-cp.core :refer [make-datasource]]))
 
-(def db-spec
-  {:classname   "org.sqlite.JDBC"
-   :subprotocol "sqlite"
-   :subname     "nexus.db"})
+(defonce ^:private ds*
+  (delay
+    (make-datasource {:jdbcUrl (or (System/getenv "JDBC_URL")
+                                   "jdbc:sqlite:./var/sqlite.db")})))
 
-(defn execute! [sql-vec]
-  (jdbc/execute! db-spec sql-vec))
+(defn ds [] @ds*)
 
-(defn query [sql-vec]
-  (jdbc/query db-spec sql-vec))
+(defn query [sql & params] (jdbc/execute! (ds) (into [sql] params)))
+(defn exec! [sql] (jdbc/execute! (ds) [sql]))
